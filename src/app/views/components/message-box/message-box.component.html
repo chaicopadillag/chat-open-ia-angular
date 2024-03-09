@@ -1,29 +1,24 @@
-<div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
+<div class="border-t-2 border-gray-200  pt-4 mb-2 sm:mb-0">
   <form [formGroup]="frm" class="relative flex" (ngSubmit)="onSubmit()">
-    <span class="absolute inset-y-0 flex items-center">
-      <button type="button" class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+    <label for="chat" class="sr-only">Your message</label>
+    <div class="flex w-full items-center py-2 px-3 bg-gray-50 rounded-lg">
+
+      <button type="button" class="px-4 inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300  bg-gray-200 focus:outline-none mr-0.5">
         <i class="text-xl text-inherit fa-solid fa-microphone-lines"></i>
       </button>
-    </span>
 
-    <input class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3" formControlName="prompt" type="text" [placeholder]="placeholder" [autocomplete]="desableCorrection?'on':'off'" [spellcheck]="desableCorrection?'on':'off'">
-
-    <input (change)="handleFile($event)" type="file" class="hidden" hidden #fileInput>
-
-    <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
-      <button (click)="fileInput.click()" type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+      <button (click)="fileInput.click()" type="button" class="px-4 inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 bg-gray-200 focus:outline-none">
         <i class="text-xl text-inherit fa-solid fa-paperclip"></i>
       </button>
-      <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
-        <i class="text-xl text-inherit fa-regular fa-image"></i>
-      </button>
-      <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
-        <i class="text-xl text-inherit fa-regular fa-face-laugh"></i>
-      </button>
-      <button type="submit" class="inline-flex items-center justify-center rounded-tr-lg rounded-br-lg px-4 py-2.5 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none" [disabled]="frm.invalid">
-        <span class="font-semibold mr-2">Send</span>
+
+      <input (change)="handleFile($event)" type="file" class="hidden" hidden #fileInput>
+
+      <textarea id="chat" rows="1" class="mx-2 w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 px-4 bg-gray-200 rounded-md py-4 max-h-36 min-h-14" formControlName="prompt" type="text" [placeholder]="placeholder" [autocomplete]="desableCorrection?'on':'off'" [spellcheck]="desableCorrection?'on':'off'"></textarea>
+
+      <button type="submit" class="px-4 w-12 h-12 inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer bg-blue-100 hover:bg-blue-200">
         <i class="text-xl text-inherit fa-solid fa-paper-plane"></i>
       </button>
+
     </div>
   </form>
 </div>

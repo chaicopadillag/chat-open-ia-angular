@@ -1,0 +1,19 @@
+<div class="chat-message">
+  <div class="flex items-end">
+    <div class="flex items-center justify-center h-8 w-8 rounded-full bg-gray-600 flex-shrink-0 text-slate-50">
+      I
+    </div>
+    <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+      <div class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-600 text-white">
+        <p class="text-lg">Puntaje: {{score}}</p>
+        <p class="m-0.5">{{message}}</p>
+        <p class="text-lg">Errores encontrados: {{errors.length}}</p>
+        <ul class="m-0.5 px-4">
+          @for (error of errors; track $index) {
+          <li class="list-disc">{{error}}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

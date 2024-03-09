@@ -2,7 +2,7 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.0.
 
-## Clone App Chat GPT
+## Clone App Chat Open IA
 
 Create file `.env` or `cp .env.example .env` and change values of environments.
 

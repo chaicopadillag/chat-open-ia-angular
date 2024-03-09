@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
-import { OpenIaService } from '@app/services/open-ia.service';
+import { ChatMessageInOrthographyComponent } from '@components/chat-message-in-orthography/chat-message-in-orthograpy.component';
 import { ChatMessageInComponent } from '@components/chat-message-in/chat-message-in.component';
 import { ChatMessageOutComponent } from '@components/chat-message-out/chat-message-out.component';
 import { MessageBoxWithSelectComponent } from '@components/message-box-with-select/message-box-with-select.component';
 import { MessageBoxComponent } from '@components/message-box/message-box.component';
 import { TypingComponent } from '@components/typing/typing.component';
+import { OrthographyService } from '@core/orthography.service';
 import { MessageBoxI, MessageI } from '@interfaces/message-box.interface';
 
 @Component({
@@ -12,6 +13,7 @@ import { MessageBoxI, MessageI } from '@interfaces/message-box.interface';
   standalone: true,
   imports: [
     ChatMessageInComponent,
+    ChatMessageInOrthographyComponent,
     MessageBoxComponent,
     ChatMessageOutComponent,
     TypingComponent,
@@ -21,25 +23,29 @@ import { MessageBoxI, MessageI } from '@interfaces/message-box.interface';
   styles: ``,
 })
 export default class OrthographyPageComponent {
-  private openIa = inject(OpenIaService);
+  private orthographyServ = inject(OrthographyService);
 
-  isTyping = signal<boolean>(true);
-  messages = signal<MessageI[]>([
-    {
-      isIa: true,
-      text: 'Ingres tu consulta IA',
-    },
-    {
-      isIa: false,
-      text: 'Que es esta pasando en Perú',
-    },
-  ]);
+  isTyping = signal<boolean>(false);
+  messages = signal<MessageI[]>([]);
 
   handleMessage(body: MessageBoxI) {
-    console.log({ body });
+    this.isTyping.set(true);
+
     this.messages.update((chats) => [
       ...chats,
       { text: body.prompt, isIa: false },
     ]);
+    this.orthographyServ.orthographyCheck({ prompt: body.prompt }).subscribe({
+      next: (data) => {
+        this.messages.update((chats) => [
+          ...chats,
+          { text: data.message, isIa: true, orthography: { ...data } },
+        ]);
+        this.isTyping.set(false);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 }

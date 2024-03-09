@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { env } from './env/environment';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +8,4 @@ import { env } from './env/environment';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
-  constructor() {
-    console.log(env);
-  }
-}
+export class AppComponent {}

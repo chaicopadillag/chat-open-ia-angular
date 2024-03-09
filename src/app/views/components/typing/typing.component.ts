@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-typing',
   standalone: true,
   imports: [],
-  template: `<div class="flex space-x-1.5 typing">
+  template: `<div class="flex space-x-1.5 typing fixed bottom-36">
     <div class="w-1.5 h-1.5 bg-gray-500 rounded-full circle scaling"></div>
     <div class="w-1.5 h-1.5 bg-gray-500 rounded-full circle scaling"></div>
     <div class="w-1.5 h-1.5 bg-gray-500 rounded-full circle scaling"></div>

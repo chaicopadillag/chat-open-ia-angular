@@ -1,8 +1,11 @@
-<div class="flex-1 sm:p-4 justify-between flex flex-col rounded-lg bg-white bg-clip-border shadow-lg">
-  <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch min-h-96">
+<div class="h-full flex-1 sm:p-4 justify-between flex flex-col rounded-lg bg-white bg-clip-border shadow-lg">
+  <div id="messages" class="relative flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch min-h-96">
+
+    <app-chat-message-in message="Ingresa tu texto ahora!" />
+
     @for (message of messages(); track $index) {
     @if (message.isIa) {
-    <app-chat-message-in [message]="message.text" />
+    <app-chat-message-in-orthography [message]="message.orthography!.message" [errors]="message.orthography!.errors" [score]="message.orthography!.score" />
     }@else {
     <app-chat-message-out [message]="message.text" />
     }
@@ -11,6 +14,6 @@
     <app-typing />
     }
   </div>
-  <app-message-box placeholder="Ingresa el prompt" (onMessage)="handleMessage($event)" />
+  <app-message-box placeholder="Ingresa un texto" (onMessage)="handleMessage($event)" />
 
 </div>

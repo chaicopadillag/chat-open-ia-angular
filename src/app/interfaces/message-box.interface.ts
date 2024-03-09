@@ -1,7 +1,9 @@
+import { OrthographyResponse } from '@core/interfaces/orthography.interface';
+
 export interface MessageI {
   isIa: boolean;
   text: string;
-  id?: string;
+  orthography?: OrthographyResponse;
 }
 export interface MessageBoxI {
   prompt: string;

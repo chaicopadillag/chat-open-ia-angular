@@ -23,6 +23,7 @@
     "paths": {
       "@components/*": ["./src/app/views/components/*"],
       "@interfaces/*": ["./src/app/interfaces/*"],
+      "@core/*": ["./src/app/core/*"],
       "@app/*": ["./src/app/*"]
     }
   },
