@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
-  MessageBoxWithSelectI,
+  MessageBoxTranslateI,
   SelectListI,
 } from '@interfaces/message-box.interface';
 
@@ -25,21 +25,21 @@ export class MessageBoxWithSelectComponent {
 
   @Input({ required: true }) selectList: SelectListI[] = [];
 
-  @Output() onMessage = new EventEmitter<MessageBoxWithSelectI>();
+  @Output() onMessage = new EventEmitter<MessageBoxTranslateI>();
 
   public fb = inject(FormBuilder);
 
   public frm = this.fb.group({
     prompt: ['', [Validators.required, Validators.minLength(3)]],
-    select: ['', Validators.required],
+    lang: ['', Validators.required],
   });
 
   onSubmit() {
     if (this.frm.invalid) return;
 
-    const { prompt, select } = this.frm.value;
+    const { prompt, lang } = this.frm.value;
 
-    this.onMessage.emit({ select, prompt } as MessageBoxWithSelectI);
+    this.onMessage.emit({ lang, prompt } as MessageBoxTranslateI);
     this.frm.reset();
   }
 }

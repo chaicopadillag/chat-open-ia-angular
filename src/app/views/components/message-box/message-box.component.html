@@ -1,6 +1,5 @@
 <div class="border-t-2 border-gray-200  pt-4 mb-2 sm:mb-0">
   <form [formGroup]="frm" class="relative flex" (ngSubmit)="onSubmit()">
-    <label for="chat" class="sr-only">Your message</label>
     <div class="flex w-full items-center py-2 px-3 bg-gray-50 rounded-lg">
 
       <button type="button" class="px-4 inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300  bg-gray-200 focus:outline-none mr-0.5">
@@ -13,9 +12,10 @@
 
       <input (change)="handleFile($event)" type="file" class="hidden" hidden #fileInput>
 
+      <label for="chat" class="sr-only">Your message</label>
       <textarea id="chat" rows="1" class="mx-2 w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 px-4 bg-gray-200 rounded-md py-4 max-h-36 min-h-14" formControlName="prompt" type="text" [placeholder]="placeholder" [autocomplete]="desableCorrection?'on':'off'" [spellcheck]="desableCorrection?'on':'off'"></textarea>
 
-      <button type="submit" class="px-4 w-12 h-12 inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer bg-blue-100 hover:bg-blue-200">
+      <button [disabled]="frm.invalid" type="submit" class="py-4 px-5 inline-flex justify-center text-blue-600 rounded-full cursor-pointer bg-blue-100 hover:bg-blue-200">
         <i class="text-xl text-inherit fa-solid fa-paper-plane"></i>
       </button>
 

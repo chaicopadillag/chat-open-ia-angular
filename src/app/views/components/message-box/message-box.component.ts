@@ -18,7 +18,7 @@ import { MessageBoxI } from '@interfaces/message-box.interface';
 })
 export class MessageBoxComponent {
   @Input() placeholder: string = '';
-  @Input({ transform: booleanAttribute }) desableCorrection: boolean = false;
+  @Input({ transform: booleanAttribute }) desableCorrection: boolean = true;
 
   @Output() onMessage = new EventEmitter<MessageBoxI>();
 

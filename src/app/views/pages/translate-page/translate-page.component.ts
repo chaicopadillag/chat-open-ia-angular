@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ChatMessageInComponent } from '@components/chat-message-in/chat-message-in.component';
 import { ChatMessageOutComponent } from '@components/chat-message-out/chat-message-out.component';
 import { MessageBoxWithSelectComponent } from '@components/message-box-with-select/message-box-with-select.component';
 import { TypingComponent } from '@components/typing/typing.component';
+import { GptService } from '@core/services/gpt.service';
 import {
-  MessageBoxWithSelectI,
+  MessageBoxTranslateI,
   MessageI,
 } from '@interfaces/message-box.interface';
 
@@ -21,31 +22,44 @@ import {
   styles: ``,
 })
 export default class TranslatePageComponent {
-  isTyping = signal<boolean>(true);
-  messages = signal<MessageI[]>([
-    {
-      isIa: true,
-      text: 'Ingres tu consulta IA',
-    },
-    {
-      isIa: false,
-      text: 'Que es esta pasando en Perú',
-    },
-  ]);
+  private translateServ = inject(GptService);
+  isTyping = signal<boolean>(false);
+  messages = signal<MessageI[]>([]);
 
-  countries = [
-    { key: 'US', value: 'United States' },
-    { key: ' CA', value: 'Canada' },
-    { key: ' FR', value: 'France' },
-    { key: ' DE', value: 'Germany' },
-    { key: ' 1', value: 'text' },
+  public languages = [
+    { key: 'alemán', value: 'Alemán' },
+    { key: 'árabe', value: 'Árabe' },
+    { key: 'bengalí', value: 'Bengalí' },
+    { key: 'francés', value: 'Francés' },
+    { key: 'hindi', value: 'Hindi' },
+    { key: 'inglés', value: 'Inglés' },
+    { key: 'japonés', value: 'Japonés' },
+    { key: 'mandarín', value: 'Mandarín' },
+    { key: 'portugués', value: 'Portugués' },
+    { key: 'ruso', value: 'Ruso' },
   ];
 
-  handleMessage(body: MessageBoxWithSelectI) {
-    console.log({ body });
+  handleMessage(body: MessageBoxTranslateI) {
+    if (this.isTyping()) return;
+
+    this.isTyping.set(true);
+
     this.messages.update((chats) => [
       ...chats,
       { text: body.prompt, isIa: false },
     ]);
+
+    this.translateServ
+      .translation({ prompt: body.prompt, lang: body.lang })
+      .subscribe({
+        next: (resp) => {
+          this.isTyping.set(false);
+          this.messages.update((chats) => [
+            ...chats,
+            { text: resp.content, isIa: true },
+          ]);
+        },
+        error: console.log,
+      });
   }
 }

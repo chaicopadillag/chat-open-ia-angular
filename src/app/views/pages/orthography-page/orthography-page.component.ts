@@ -5,7 +5,7 @@ import { ChatMessageOutComponent } from '@components/chat-message-out/chat-messa
 import { MessageBoxWithSelectComponent } from '@components/message-box-with-select/message-box-with-select.component';
 import { MessageBoxComponent } from '@components/message-box/message-box.component';
 import { TypingComponent } from '@components/typing/typing.component';
-import { OrthographyService } from '@core/orthography.service';
+import { GptService } from '@core/services/gpt.service';
 import { MessageBoxI, MessageI } from '@interfaces/message-box.interface';
 
 @Component({
@@ -23,7 +23,7 @@ import { MessageBoxI, MessageI } from '@interfaces/message-box.interface';
   styles: ``,
 })
 export default class OrthographyPageComponent {
-  private orthographyServ = inject(OrthographyService);
+  private orthographyServ = inject(GptService);
 
   isTyping = signal<boolean>(false);
   messages = signal<MessageI[]>([]);

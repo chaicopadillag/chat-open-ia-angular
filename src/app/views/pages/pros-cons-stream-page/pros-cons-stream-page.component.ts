@@ -5,9 +5,8 @@ import { ChatMessageInComponent } from '@components/chat-message-in/chat-message
 import { ChatMessageOutComponent } from '@components/chat-message-out/chat-message-out.component';
 import { MessageBoxComponent } from '@components/message-box/message-box.component';
 import { TypingComponent } from '@components/typing/typing.component';
-import { ProsConsService } from '@core/pros-cons.service';
+import { GptService } from '@core/services/gpt.service';
 import { MessageBoxI, MessageI } from '@interfaces/message-box.interface';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-pros-cons-stream-page',
@@ -23,14 +22,13 @@ import { Subject } from 'rxjs';
   styles: ``,
 })
 export default class ProsConsStreamPageComponent {
-  private prosCons = inject(ProsConsService);
+  private prosCons = inject(GptService);
 
   isTyping = signal<boolean>(false);
   messages = signal<MessageI[]>([]);
-  private abortSignal = new Subject<void>();
 
   handleMessage(body: MessageBoxI) {
-    this.abortRequest();
+    if (this.isTyping()) return;
     this.isTyping.set(true);
 
     this.messages.update((chats) => [
@@ -39,33 +37,22 @@ export default class ProsConsStreamPageComponent {
       { text: '...', isIa: true },
     ]);
 
-    this.prosCons
-      .prosConsStream({ prompt: body.prompt }, this.abortSignal)
-      .subscribe({
-        next: (event: any) => {
-          if (event.type === HttpEventType.DownloadProgress) {
-            this.messages().pop();
+    this.prosCons.prosConsStream({ prompt: body.prompt }).subscribe({
+      next: (event: any) => {
+        if (event.type === HttpEventType.DownloadProgress) {
+          this.messages().pop();
 
-            this.messages.set([
-              ...this.messages(),
-              { isIa: true, text: event.partialText },
-            ]);
-          } else if (event instanceof HttpResponse) {
-            this.isTyping.set(false);
-          }
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-  }
-
-  abortRequest() {
-    this.abortSignal.next();
-    this.abortSignal = new Subject<void>();
-  }
-
-  ngOnDestroy() {
-    this.abortSignal.complete();
+          this.messages.set([
+            ...this.messages(),
+            { isIa: true, text: event.partialText },
+          ]);
+        } else if (event instanceof HttpResponse) {
+          this.isTyping.set(false);
+        }
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 }
