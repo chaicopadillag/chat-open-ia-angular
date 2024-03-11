@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { env } from '@app/env/environment';
+import {
+  AudioToTextBody,
+  AuditoToTextResponse,
+} from '@core/interfaces/audio-to-text.interface';
 import { OrthographyResponse } from '@core/interfaces/orthography.interface';
 import { ProsConsDisscucerResponse } from '@core/interfaces/pros-cons.interface';
 import { TranslatationResponse } from '@core/interfaces/translation.interface';
@@ -84,6 +88,24 @@ export class GptService {
       })
       .pipe(
         map((blob) => URL.createObjectURL(blob)),
+        catchError(() =>
+          throwError(() => new Error('Error al intentar obtener audio'))
+        )
+      );
+  }
+
+  audioToText(body: AudioToTextBody) {
+    const formData = new FormData();
+
+    formData.append('file', body.file);
+
+    if (body?.prompt) {
+      formData.append('prompt', body.prompt);
+    }
+
+    return this.http
+      .post<AuditoToTextResponse>(`${this.apiGpt}/audio-to-text`, formData)
+      .pipe(
         catchError(() =>
           throwError(() => new Error('Error al intentar obtener audio'))
         )

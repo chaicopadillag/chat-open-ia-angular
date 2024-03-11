@@ -1,10 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { ChatMessageInComponent } from '@components/chat-message-in/chat-message-in.component';
 import { ChatMessageOutComponent } from '@components/chat-message-out/chat-message-out.component';
-import { MessageBoxWithSelectComponent } from '@components/message-box-with-select/message-box-with-select.component';
+import { MessageBoxComponent } from '@components/message-box/message-box.component';
 import { TypingComponent } from '@components/typing/typing.component';
 import { GptService } from '@core/services/gpt.service';
-import { MessageBoxSelectI, MessageI } from '@interfaces/message-box.interface';
+import { MessageBoxI, MessageI } from '@interfaces/message-box.interface';
 
 @Component({
   selector: 'app-audio-to-text-page',
@@ -13,7 +13,7 @@ import { MessageBoxSelectI, MessageI } from '@interfaces/message-box.interface';
     ChatMessageInComponent,
     ChatMessageOutComponent,
     TypingComponent,
-    MessageBoxWithSelectComponent,
+    MessageBoxComponent,
   ],
   templateUrl: './audio-to-text-page.component.html',
   styles: ``,
@@ -32,7 +32,9 @@ export default class AudioToTextPageComponent {
     { key: 'shimmer', value: 'Shimmer' },
   ];
 
-  handleMessage(body: MessageBoxSelectI) {
+  handleMessage(body: MessageBoxI) {
+    if (!body?.file) return;
+
     if (this.isTyping()) return;
 
     this.isTyping.set(true);
@@ -43,14 +45,27 @@ export default class AudioToTextPageComponent {
     ]);
 
     this.translateServ
-      .textToAudio({ voice: body.select, prompt: body.prompt })
+      .audioToText({ prompt: body?.prompt, file: body.file })
       .subscribe({
-        next: (url) => {
+        next: (data) => {
           this.isTyping.set(false);
-          this.messages.update((chats) => [
-            ...chats,
-            { text: url, isIa: true },
-          ]);
+          const text = `
+          # Transcripción:
+          __Duración:__ ${Math.round(data.duration)} segundos.
+          # Texto es:
+          ${data.text}`;
+          this.messages.update((chats) => [...chats, { text, isIa: true }]);
+
+          for (const { start, end, text } of data.segments) {
+            const textSegment = `__De ${Math.round(start)} a ${Math.round(
+              end
+            )} segundos:__
+            ${text}`;
+            this.messages.update((chats) => [
+              ...chats,
+              { text: textSegment, isIa: true },
+            ]);
+          }
         },
         error: console.log,
       });
