@@ -10,9 +10,19 @@ export interface MessageBoxI {
   file?: File;
 }
 
+export interface MessageBoxSelectI {
+  prompt: string;
+  select: string;
+}
+
 export interface MessageBoxTranslateI {
   prompt: string;
   lang: string;
+}
+
+export interface MessageBoxTextToAudioI {
+  prompt: string;
+  voice: string;
 }
 
 export interface SelectListI {

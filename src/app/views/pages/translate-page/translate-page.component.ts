@@ -4,10 +4,7 @@ import { ChatMessageOutComponent } from '@components/chat-message-out/chat-messa
 import { MessageBoxWithSelectComponent } from '@components/message-box-with-select/message-box-with-select.component';
 import { TypingComponent } from '@components/typing/typing.component';
 import { GptService } from '@core/services/gpt.service';
-import {
-  MessageBoxTranslateI,
-  MessageI,
-} from '@interfaces/message-box.interface';
+import { MessageBoxSelectI, MessageI } from '@interfaces/message-box.interface';
 
 @Component({
   selector: 'app-translate-page',
@@ -39,7 +36,7 @@ export default class TranslatePageComponent {
     { key: 'ruso', value: 'Ruso' },
   ];
 
-  handleMessage(body: MessageBoxTranslateI) {
+  handleMessage(body: MessageBoxSelectI) {
     if (this.isTyping()) return;
 
     this.isTyping.set(true);
@@ -50,7 +47,7 @@ export default class TranslatePageComponent {
     ]);
 
     this.translateServ
-      .translation({ prompt: body.prompt, lang: body.lang })
+      .translation({ lang: body.select, prompt: body.prompt })
       .subscribe({
         next: (resp) => {
           this.isTyping.set(false);

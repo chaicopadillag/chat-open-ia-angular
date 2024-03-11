@@ -6,9 +6,10 @@ import { ProsConsDisscucerResponse } from '@core/interfaces/pros-cons.interface'
 import { TranslatationResponse } from '@core/interfaces/translation.interface';
 import {
   MessageBoxI,
+  MessageBoxTextToAudioI,
   MessageBoxTranslateI,
 } from '@interfaces/message-box.interface';
-import { catchError, throwError } from 'rxjs';
+import { catchError, map, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GptService {
@@ -59,6 +60,32 @@ export class GptService {
       .pipe(
         catchError(() =>
           throwError(() => new Error('Error al intentar traducir texto'))
+        )
+      );
+  }
+
+  textToAudio(body: MessageBoxTextToAudioI) {
+    return this.http
+      .post(`${this.apiGpt}/text-to-audio`, body, {
+        responseType: 'blob',
+      })
+      .pipe(
+        map((blob) => URL.createObjectURL(blob)),
+        catchError(() =>
+          throwError(() => new Error('Error al generar texto a audio'))
+        )
+      );
+  }
+
+  getAudioById(fileId: string) {
+    return this.http
+      .get(`${this.apiGpt}/text-to-audio/${fileId}`, {
+        responseType: 'blob',
+      })
+      .pipe(
+        map((blob) => URL.createObjectURL(blob)),
+        catchError(() =>
+          throwError(() => new Error('Error al intentar obtener audio'))
         )
       );
   }
