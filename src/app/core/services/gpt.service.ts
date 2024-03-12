@@ -5,6 +5,10 @@ import {
   AudioToTextBody,
   AuditoToTextResponse,
 } from '@core/interfaces/audio-to-text.interface';
+import {
+  ImageGenerationReqI,
+  ImageGenerationResI,
+} from '@core/interfaces/image-generation.interface';
 import { OrthographyResponse } from '@core/interfaces/orthography.interface';
 import { ProsConsDisscucerResponse } from '@core/interfaces/pros-cons.interface';
 import { TranslatationResponse } from '@core/interfaces/translation.interface';
@@ -105,6 +109,26 @@ export class GptService {
 
     return this.http
       .post<AuditoToTextResponse>(`${this.apiGpt}/audio-to-text`, formData)
+      .pipe(
+        catchError(() =>
+          throwError(() => new Error('Error al intentar obtener audio'))
+        )
+      );
+  }
+
+  imageGeneration(body: ImageGenerationReqI) {
+    return this.http
+      .post<ImageGenerationResI>(`${this.apiGpt}/image-generation`, body)
+      .pipe(
+        catchError(() =>
+          throwError(() => new Error('Error al intentar obtener audio'))
+        )
+      );
+  }
+
+  imageVariation(image: string) {
+    return this.http
+      .post<ImageGenerationResI>(`${this.apiGpt}/image-variation`, { image })
       .pipe(
         catchError(() =>
           throwError(() => new Error('Error al intentar obtener audio'))

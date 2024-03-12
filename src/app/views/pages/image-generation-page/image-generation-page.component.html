@@ -1,1 +1,18 @@
-<p>image-generation-page works!</p>
+<div class="h-full flex-1 sm:p-4 justify-between flex flex-col rounded-lg bg-white bg-clip-border shadow-lg">
+  <div id="messages" class="relative flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch min-h-96">
+
+    <app-chat-message-in message="Que desea generar" />
+    @for (message of messages(); track $index) {
+    @if (message.isIa) {
+    <app-chat-message-image-in [url]="message.imageUrl" [message]="message.text" />
+    }@else {
+    <app-chat-message-out [message]="message.text" />
+    }
+    }
+    @if(isTyping()){
+    <app-typing />
+    }
+  </div>
+  <app-message-box placeholder="Ingresa un texto" (onMessage)="handleMessage($event)" />
+
+</div>
