@@ -34,13 +34,7 @@ export default class ImageTunningPageComponent {
   private maksImage = signal<string | null>(null);
 
   isTyping = signal<boolean>(false);
-  messages = signal<MessageImageI[]>([
-    {
-      imageUrl: 'http://localhost:8080/gpt/image-generation/1710198629683.png',
-      isIa: true,
-      text: '',
-    },
-  ]);
+  messages = signal<MessageImageI[]>([]);
 
   handleMessage(body: MessageBoxI) {
     this.isTyping.set(true);

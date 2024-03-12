@@ -23,7 +23,7 @@ import { MessageBoxI, MessageI } from '@interfaces/message-box.interface';
   styles: ``,
 })
 export default class OrthographyPageComponent {
-  private orthographyServ = inject(GptService);
+  private gptServ = inject(GptService);
 
   isTyping = signal<boolean>(false);
   messages = signal<MessageI[]>([]);
@@ -35,7 +35,7 @@ export default class OrthographyPageComponent {
       ...chats,
       { text: body.prompt, isIa: false },
     ]);
-    this.orthographyServ.orthographyCheck({ prompt: body.prompt }).subscribe({
+    this.gptServ.orthographyCheck({ prompt: body.prompt }).subscribe({
       next: (data) => {
         this.messages.update((chats) => [
           ...chats,

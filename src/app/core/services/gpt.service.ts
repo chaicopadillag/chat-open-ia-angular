@@ -2,6 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { env } from '@app/env/environment';
 import {
+  AssistantMessageI,
+  AssistantReqI,
+} from '@core/interfaces/assistant.interface';
+import {
   AudioToTextBody,
   AuditoToTextResponse,
 } from '@core/interfaces/audio-to-text.interface';
@@ -17,11 +21,11 @@ import {
   MessageBoxTextToAudioI,
   MessageBoxTranslateI,
 } from '@interfaces/message-box.interface';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError, map, of, tap, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GptService {
-  private apiGpt = env.API_HOST_GPT;
+  private apiGpt: string = env.API_HOST_GPT;
 
   constructor(private http: HttpClient) {}
 
@@ -121,7 +125,7 @@ export class GptService {
       .post<ImageGenerationResI>(`${this.apiGpt}/image-generation`, body)
       .pipe(
         catchError(() =>
-          throwError(() => new Error('Error al intentar obtener audio'))
+          throwError(() => new Error('Error al intentar generate image'))
         )
       );
   }
@@ -131,7 +135,43 @@ export class GptService {
       .post<ImageGenerationResI>(`${this.apiGpt}/image-variation`, { image })
       .pipe(
         catchError(() =>
-          throwError(() => new Error('Error al intentar obtener audio'))
+          throwError(
+            () => new Error('Error al intentar generar image variation')
+          )
+        )
+      );
+  }
+
+  // * Assistant
+
+  createThread() {
+    const urlAssistant = this.apiGpt.replace('gpt', 'assistant');
+
+    const thread = localStorage.getItem('thread');
+
+    if (thread) return of({ id: thread });
+
+    return this.http
+      .post<{ id: string }>(`${urlAssistant}/create-thread`, {})
+      .pipe(
+        tap(({ id }) => localStorage.setItem('thread', id)),
+        catchError(() => throwError(() => new Error('Error al generar thread')))
+      );
+  }
+
+  userCuestion(body: AssistantReqI) {
+    const urlAssistant = this.apiGpt.replace('gpt', 'assistant');
+
+    return this.http
+      .post<AssistantMessageI[]>(`${urlAssistant}/create-message`, body)
+      .pipe(
+        map((resp) =>
+          resp.map((m) => ({ text: m.content, isIa: m.role === 'assistant' }))
+        ),
+        catchError(() =>
+          throwError(
+            () => new Error('Error al procesar la pregunta del usuario')
+          )
         )
       );
   }
